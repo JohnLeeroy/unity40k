@@ -8,12 +8,20 @@ public class CombatEngine {
 		return instance;
 	}
 
-	public void shoot(BaseUnit attacker, Weapon weapon, BaseUnit defender){
-		if(!isWithinRange(weapon, defender) || !isWithinLineOfSight(attacker, defender))
-			return;
+	//Three phases
+	//Hits
+	//Wounds
+	//Saves
 
-		int shots = 1;
-		switch(weapon.getWeaponType()){
+
+	public RangedCombatResult proccess(BaseUnit attacker, Weapon weapon, BaseUnit defender){
+		RangedCombatResult result = RangedCombatResult.Empty;
+		if(!RangeFinder.isWithinRange(attacker, weapon, defender) || !RangeFinder.hasLineOfSight(attacker, defender))
+			return RangedCombatResult.Empty;
+
+
+		/*
+		switch(weapon.getFireMode()){
 			case WeaponType.RAPID_FIRE:
 				processRapidFire(attacker, weapon, defender);
 				break;
@@ -26,20 +34,22 @@ public class CombatEngine {
 				processCombat(attacker, weapon, defender);
 			break;
 		}
+		*/
+		return result;
 	}
 
 	private void processRapidFire(BaseUnit attacker, Weapon weapon, BaseUnit defender){
 		int shots = 1;
-		if(isWithinRapidFireRange(weapon, defender))
+		if(RangeFinder.isWithinRapidFireRange(attacker, weapon, defender))
 			shots = 2;
 	}
 
-	private CombatResults processCombat(BaseUnit attacker, Weapon weapon, BaseUnit defender){
+	private RangedCombatResult processCombat(BaseUnit attacker, Weapon weapon, BaseUnit defender){
 		int hitCount = 0;
 		int hitDifficulty = getHitDifficulty (attacker.getBallisticSkills());
 		int woundDifficulty = getWoundDifficulty(weapon.getStrength(), defender.getToughness());
 		bool isSaveable = isSaveableAgainstWeapon(defender, weapon);
-		CombatResults result = new CombatResults();
+		RangedCombatResult result = new RangedCombatResult();
 
 		for(int i = 0; i < weapon.getShots(); i++){
 			int hitRoll = Dice.roll(1)[0];
@@ -56,7 +66,8 @@ public class CombatEngine {
 		return result;
 	}
 
-	bool isSaveableAgainstWeapon(BaseUnit defender, Weapon attackingWeapon){
+	public bool isSaveableAgainstWeapon(BaseUnit defender, Weapon attackingWeapon){
+		//TODO check invunerable save & special rules
 		//Check special rules for saves
 		bool hasCoverOrInvunerableSave = false;
 		if(hasCoverOrInvunerableSave)
@@ -68,7 +79,7 @@ public class CombatEngine {
 		return true;
 	}
 
-	public int getWoundDifficulty(int attackStrength, int defenseToughness){
+	public static int getWoundDifficulty(int attackStrength, int defenseToughness){
 		int difference = defenseToughness - attackStrength;
 		int result = 4 + difference;
 		if(result > 6)
@@ -78,26 +89,11 @@ public class CombatEngine {
 		return result;
 	}
 
-	public int getHitDifficulty(int ballisticSkill){
+	public static int getHitDifficulty(int ballisticSkill){
 		return 7 - ballisticSkill;
 	}
 
-	private bool isWithinRapidFireRange(Weapon weapon, BaseUnit defender){
-		return true;
-	}
 
-	private bool isWithinRange(Weapon a, BaseUnit b){
-		return true;
-	}
-
-	private bool isWithinLineOfSight(BaseUnit a, BaseUnit b){
-		return true;
-	}
-
-	public class CombatResults{
-		public int saveableWounds = 0;
-		public int automaticWounds = 0;
-	}
 }
 
 //handle saving throws

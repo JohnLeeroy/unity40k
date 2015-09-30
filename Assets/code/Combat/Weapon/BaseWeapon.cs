@@ -8,11 +8,11 @@ public class BaseWeapon : Weapon{
 	private int strength;
 	private int armorPierce;
 	private int shots;
-	private WeaponType type;
+	private FireMode fireMode;
 
 	public int getRange()	{ return range; }
 	public int getStrength() { return strength; }
 	public int getArmorPierce() {return armorPierce; }
 	public int getShots()	{ return shots; }
-	public WeaponType getWeaponType() { return type; }
+	public FireMode getFireMode() { return fireMode; }
 }

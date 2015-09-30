@@ -3,7 +3,5 @@ public interface Weapon{
 	int getStrength();
 	int getArmorPierce();
 	int getShots();
-	WeaponType getWeaponType();
+	FireMode getFireMode();
 }
-
-public enum WeaponType{RAPID_FIRE, ASSAULT, HEAVY };
