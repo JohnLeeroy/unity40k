@@ -1,0 +1,1 @@
+public enum MovementType{ NORMAL, JUMP, BIKE, JETBIKE };
